@@ -1,0 +1,27 @@
+{
+  "generator-jhipster": {
+    "applicationIndex": 1,
+    "applicationType": "microservice",
+    "authenticationType": "oauth2",
+    "baseName": "ms_user",
+    "cacheProvider": "redis",
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "enableSwaggerCodegen": true,
+    "entities": ["User", "KeycloakUser"],
+    "gatewayServerPort": "8080",
+    "jhipsterVersion": "8.10.0",
+    "jwtSecretKey": "MWRmNDA1MTg4YThhODg1OGU3YTdhZWYxZDA3NTRkMzU0ZThmMjI3NTk2MTI5Mjg5ZjU5YmUxMjZiMDJiYTViY2MwMDhiYjU5YjYyZjU1YWY4NGE2Y2ExY2FjOThlNGI2ZTFkNTVjYTM1MThlMTZjODBlZjRiMDMwMjA5YTMyOWY=",
+    "languages": ["en"],
+    "lastLiquibaseTimestamp": 1756658412000,
+    "monorepository": true,
+    "nativeLanguage": "en",
+    "packageName": "com.ticketsystem.user",
+    "prodDatabaseType": "mysql",
+    "serverPort": "8081",
+    "serviceDiscoveryType": "consul",
+    "skipClient": true,
+    "skipCommitHook": true,
+    "skipUserManagement": true
+  }
+}
