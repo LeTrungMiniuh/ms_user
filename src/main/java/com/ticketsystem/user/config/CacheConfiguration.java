@@ -78,8 +78,8 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer(javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration) {
         return cm -> {
-            createCache(cm, com.ticketsystem.user.domain.User.class.getName(), jcacheConfiguration);
-            createCache(cm, com.ticketsystem.user.domain.KeycloakUser.class.getName(), jcacheConfiguration);
+            createCache(cm, com.ticketsystem.user.domain.AppUser.class.getName(), jcacheConfiguration);
+            createCache(cm, com.ticketsystem.user.domain.UserPreferences.class.getName(), jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

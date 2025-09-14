@@ -1,7 +1,7 @@
 package com.ticketsystem.user.web.rest;
 
 import com.ticketsystem.user.broker.KafkaProducer;
-import com.ticketsystem.user.service.dto.UserDTO;
+import com.ticketsystem.user.service.dto.AppUserDTO;
 import com.ticketsystem.kafka.service.KafkaUtilityService;
 
 import java.util.HashMap;
@@ -61,11 +61,11 @@ public class MsUserKafkaResource {
      * Send a user creation event
      */
     @PostMapping("/publish/user-created")
-    public ResponseEntity<Map<String, String>> publishUserCreated(@RequestBody UserDTO userDTO) {
-        LOG.debug("REST request to queue user created event for: {}", userDTO);
+    public ResponseEntity<Map<String, String>> publishUserCreated(@RequestBody AppUserDTO AppUserDTO) {
+        LOG.debug("REST request to queue user created event for: {}", AppUserDTO);
 
         try {
-            String messageKey = kafkaProducer.send("user.created", userDTO);
+            String messageKey = kafkaProducer.send("user.created", AppUserDTO);
             if (messageKey == null) {
                 throw new IllegalStateException("Failed to queue event (null key returned)");
             }
@@ -73,7 +73,7 @@ public class MsUserKafkaResource {
             Map<String, String> response = new HashMap<>();
             response.put("message", "User created event queued successfully");
             response.put("messageKey", messageKey);
-            response.put("userId", String.valueOf(userDTO.getId()));
+            response.put("userId", String.valueOf(AppUserDTO.getId()));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -88,10 +88,10 @@ public class MsUserKafkaResource {
      * Send a user updated event
      */
     @PostMapping("/publish/user-updated")
-    public ResponseEntity<Map<String, String>> publishUserUpdated(@RequestBody UserDTO userDTO) {
-        LOG.debug("REST request to queue user updated event for: {}", userDTO);
+    public ResponseEntity<Map<String, String>> publishUserUpdated(@RequestBody AppUserDTO AppUserDTO) {
+        LOG.debug("REST request to queue user updated event for: {}", AppUserDTO);
         try {
-            String messageKey = kafkaProducer.send("user.updated", userDTO);
+            String messageKey = kafkaProducer.send("user.updated", AppUserDTO);
             if (messageKey == null) {
                 throw new IllegalStateException("Failed to queue event (null key returned)");
             }
@@ -99,7 +99,7 @@ public class MsUserKafkaResource {
             Map<String, String> response = new HashMap<>();
             response.put("message", "User updated event queued successfully");
             response.put("messageKey", messageKey);
-            response.put("userId", String.valueOf(userDTO.getId()));
+            response.put("userId", String.valueOf(AppUserDTO.getId()));
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

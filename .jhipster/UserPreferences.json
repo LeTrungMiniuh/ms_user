@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20250914130830"
+  },
+  "applications": ["ms_user"],
+  "clientRootFolder": "ms_user",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "preferredLanguage",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "emailNotifications",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "smsNotifications",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "pushNotifications",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "phone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "microserviceName": "ms_user",
+  "name": "UserPreferences",
+  "relationships": [
+    {
+      "otherEntityName": "appUser",
+      "otherEntityRelationshipName": "preferences",
+      "relationshipName": "appUser",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one",
+      "relationshipValidateRules": "required"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}
