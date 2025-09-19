@@ -5,8 +5,9 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ticketsystem.msbooking.client.api.BookingResourceMsbookingApi;
 import com.ticketsystem.msnotification.client.api.NotificationResourceMsnotificationApi;
 import com.ticketsystem.mspayment.client.api.PaymentResourceMspaymentApi;
+import com.ticketsystem.mspromotion.client.api.PromotionResourceMspromotionApi;
 import com.ticketsystem.msroute.client.api.RouteResourceMsrouteApi;
-import com.ticketsystem.msuser.client.api.UserResourceMsuserApi;
+import com.ticketsystem.msuser.client.api.AppUserResourceMsuserApi;
 
 import feign.Feign;
 import feign.Logger;
@@ -81,23 +82,16 @@ public class FeignClientConfiguration {
 
     @Bean
     @Lazy
-    public NotificationResourceMsnotificationApi notificationResourceMsnotificationApi(
+    public PromotionResourceMspromotionApi promotionResourceMspromotionApi(
             RequestInterceptor auth, Encoder enc, Decoder dec) {
-        return lazyFeignFor("msnotification", NotificationResourceMsnotificationApi.class, auth, enc, dec);
+        return lazyFeignFor("msuser", PromotionResourceMspromotionApi.class, auth, enc, dec);
     }
 
     @Bean
     @Lazy
-    public PaymentResourceMspaymentApi paymentResourceMspaymentApi(
+    public AppUserResourceMsuserApi appUserResourceMsuserApi(
             RequestInterceptor auth, Encoder enc, Decoder dec) {
-        return lazyFeignFor("mspayment", PaymentResourceMspaymentApi.class, auth, enc, dec);
-    }
-
-    @Bean
-    @Lazy
-    public UserResourceMsuserApi userResourceMsuserApi(
-            RequestInterceptor auth, Encoder enc, Decoder dec) {
-        return lazyFeignFor("msuser", UserResourceMsuserApi.class, auth, enc, dec);
+        return lazyFeignFor("msuser", AppUserResourceMsuserApi.class, auth, enc, dec);
     }
 
 
