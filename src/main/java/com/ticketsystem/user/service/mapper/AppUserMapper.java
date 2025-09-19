@@ -1,9 +1,9 @@
 package com.ticketsystem.user.service.mapper;
 
 import com.ticketsystem.user.domain.AppUser;
-import com.ticketsystem.user.domain.UserPreferences;
+import com.ticketsystem.user.domain.Profile;
 import com.ticketsystem.user.service.dto.AppUserDTO;
-import com.ticketsystem.user.service.dto.UserPreferencesDTO;
+import com.ticketsystem.user.service.dto.ProfileDTO;
 import org.mapstruct.*;
 
 /**
@@ -11,11 +11,11 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring")
 public interface AppUserMapper extends EntityMapper<AppUserDTO, AppUser> {
-    @Mapping(target = "preferences", source = "preferences", qualifiedByName = "userPreferencesId")
+    @Mapping(target = "profile", source = "profile", qualifiedByName = "profileId")
     AppUserDTO toDto(AppUser s);
 
-    @Named("userPreferencesId")
+    @Named("profileId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    UserPreferencesDTO toDtoUserPreferencesId(UserPreferences userPreferences);
+    ProfileDTO toDtoProfileId(Profile profile);
 }

@@ -47,19 +47,20 @@ public class AppUserAsserts {
     public static void assertAppUserUpdatableFieldsEquals(AppUser expected, AppUser actual) {
         assertThat(actual)
             .as("Verify AppUser relevant properties")
-            .satisfies(a -> assertThat(a.getUsername()).as("check username").isEqualTo(expected.getUsername()))
+            .satisfies(a -> assertThat(a.getKeycloakId()).as("check keycloakId").isEqualTo(expected.getKeycloakId()))
             .satisfies(a -> assertThat(a.getEmail()).as("check email").isEqualTo(expected.getEmail()))
             .satisfies(a -> assertThat(a.getPhoneNumber()).as("check phoneNumber").isEqualTo(expected.getPhoneNumber()))
             .satisfies(a -> assertThat(a.getFirstName()).as("check firstName").isEqualTo(expected.getFirstName()))
             .satisfies(a -> assertThat(a.getLastName()).as("check lastName").isEqualTo(expected.getLastName()))
             .satisfies(a -> assertThat(a.getDateOfBirth()).as("check dateOfBirth").isEqualTo(expected.getDateOfBirth()))
-            .satisfies(a -> assertThat(a.getIdNumber()).as("check idNumber").isEqualTo(expected.getIdNumber()))
-            .satisfies(a -> assertThat(a.getNationality()).as("check nationality").isEqualTo(expected.getNationality()))
-            .satisfies(a -> assertThat(a.getProfileImage()).as("check profileImage").isEqualTo(expected.getProfileImage()))
             .satisfies(a -> assertThat(a.getIsVerified()).as("check isVerified").isEqualTo(expected.getIsVerified()))
             .satisfies(a -> assertThat(a.getIsActive()).as("check isActive").isEqualTo(expected.getIsActive()))
+            .satisfies(a -> assertThat(a.getLastLoginAt()).as("check lastLoginAt").isEqualTo(expected.getLastLoginAt()))
             .satisfies(a -> assertThat(a.getCreatedAt()).as("check createdAt").isEqualTo(expected.getCreatedAt()))
-            .satisfies(a -> assertThat(a.getLastLoginAt()).as("check lastLoginAt").isEqualTo(expected.getLastLoginAt()));
+            .satisfies(a -> assertThat(a.getUpdatedAt()).as("check updatedAt").isEqualTo(expected.getUpdatedAt()))
+            .satisfies(a -> assertThat(a.getIsDeleted()).as("check isDeleted").isEqualTo(expected.getIsDeleted()))
+            .satisfies(a -> assertThat(a.getDeletedAt()).as("check deletedAt").isEqualTo(expected.getDeletedAt()))
+            .satisfies(a -> assertThat(a.getDeletedBy()).as("check deletedBy").isEqualTo(expected.getDeletedBy()));
     }
 
     /**
@@ -71,6 +72,6 @@ public class AppUserAsserts {
     public static void assertAppUserUpdatableRelationshipsEquals(AppUser expected, AppUser actual) {
         assertThat(actual)
             .as("Verify AppUser relationships")
-            .satisfies(a -> assertThat(a.getPreferences()).as("check preferences").isEqualTo(expected.getPreferences()));
+            .satisfies(a -> assertThat(a.getProfile()).as("check profile").isEqualTo(expected.getProfile()));
     }
 }

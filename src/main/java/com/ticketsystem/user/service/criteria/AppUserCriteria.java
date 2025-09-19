@@ -24,7 +24,7 @@ public class AppUserCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
-    private StringFilter username;
+    private UUIDFilter keycloakId;
 
     private StringFilter email;
 
@@ -36,21 +36,23 @@ public class AppUserCriteria implements Serializable, Criteria {
 
     private LocalDateFilter dateOfBirth;
 
-    private StringFilter idNumber;
-
-    private StringFilter nationality;
-
-    private StringFilter profileImage;
-
     private BooleanFilter isVerified;
 
     private BooleanFilter isActive;
 
-    private InstantFilter createdAt;
-
     private InstantFilter lastLoginAt;
 
-    private LongFilter preferencesId;
+    private InstantFilter createdAt;
+
+    private InstantFilter updatedAt;
+
+    private BooleanFilter isDeleted;
+
+    private InstantFilter deletedAt;
+
+    private UUIDFilter deletedBy;
+
+    private LongFilter profileId;
 
     private Boolean distinct;
 
@@ -58,20 +60,21 @@ public class AppUserCriteria implements Serializable, Criteria {
 
     public AppUserCriteria(AppUserCriteria other) {
         this.id = other.optionalId().map(LongFilter::copy).orElse(null);
-        this.username = other.optionalUsername().map(StringFilter::copy).orElse(null);
+        this.keycloakId = other.optionalKeycloakId().map(UUIDFilter::copy).orElse(null);
         this.email = other.optionalEmail().map(StringFilter::copy).orElse(null);
         this.phoneNumber = other.optionalPhoneNumber().map(StringFilter::copy).orElse(null);
         this.firstName = other.optionalFirstName().map(StringFilter::copy).orElse(null);
         this.lastName = other.optionalLastName().map(StringFilter::copy).orElse(null);
         this.dateOfBirth = other.optionalDateOfBirth().map(LocalDateFilter::copy).orElse(null);
-        this.idNumber = other.optionalIdNumber().map(StringFilter::copy).orElse(null);
-        this.nationality = other.optionalNationality().map(StringFilter::copy).orElse(null);
-        this.profileImage = other.optionalProfileImage().map(StringFilter::copy).orElse(null);
         this.isVerified = other.optionalIsVerified().map(BooleanFilter::copy).orElse(null);
         this.isActive = other.optionalIsActive().map(BooleanFilter::copy).orElse(null);
-        this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);
         this.lastLoginAt = other.optionalLastLoginAt().map(InstantFilter::copy).orElse(null);
-        this.preferencesId = other.optionalPreferencesId().map(LongFilter::copy).orElse(null);
+        this.createdAt = other.optionalCreatedAt().map(InstantFilter::copy).orElse(null);
+        this.updatedAt = other.optionalUpdatedAt().map(InstantFilter::copy).orElse(null);
+        this.isDeleted = other.optionalIsDeleted().map(BooleanFilter::copy).orElse(null);
+        this.deletedAt = other.optionalDeletedAt().map(InstantFilter::copy).orElse(null);
+        this.deletedBy = other.optionalDeletedBy().map(UUIDFilter::copy).orElse(null);
+        this.profileId = other.optionalProfileId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -99,23 +102,23 @@ public class AppUserCriteria implements Serializable, Criteria {
         this.id = id;
     }
 
-    public StringFilter getUsername() {
-        return username;
+    public UUIDFilter getKeycloakId() {
+        return keycloakId;
     }
 
-    public Optional<StringFilter> optionalUsername() {
-        return Optional.ofNullable(username);
+    public Optional<UUIDFilter> optionalKeycloakId() {
+        return Optional.ofNullable(keycloakId);
     }
 
-    public StringFilter username() {
-        if (username == null) {
-            setUsername(new StringFilter());
+    public UUIDFilter keycloakId() {
+        if (keycloakId == null) {
+            setKeycloakId(new UUIDFilter());
         }
-        return username;
+        return keycloakId;
     }
 
-    public void setUsername(StringFilter username) {
-        this.username = username;
+    public void setKeycloakId(UUIDFilter keycloakId) {
+        this.keycloakId = keycloakId;
     }
 
     public StringFilter getEmail() {
@@ -213,63 +216,6 @@ public class AppUserCriteria implements Serializable, Criteria {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public StringFilter getIdNumber() {
-        return idNumber;
-    }
-
-    public Optional<StringFilter> optionalIdNumber() {
-        return Optional.ofNullable(idNumber);
-    }
-
-    public StringFilter idNumber() {
-        if (idNumber == null) {
-            setIdNumber(new StringFilter());
-        }
-        return idNumber;
-    }
-
-    public void setIdNumber(StringFilter idNumber) {
-        this.idNumber = idNumber;
-    }
-
-    public StringFilter getNationality() {
-        return nationality;
-    }
-
-    public Optional<StringFilter> optionalNationality() {
-        return Optional.ofNullable(nationality);
-    }
-
-    public StringFilter nationality() {
-        if (nationality == null) {
-            setNationality(new StringFilter());
-        }
-        return nationality;
-    }
-
-    public void setNationality(StringFilter nationality) {
-        this.nationality = nationality;
-    }
-
-    public StringFilter getProfileImage() {
-        return profileImage;
-    }
-
-    public Optional<StringFilter> optionalProfileImage() {
-        return Optional.ofNullable(profileImage);
-    }
-
-    public StringFilter profileImage() {
-        if (profileImage == null) {
-            setProfileImage(new StringFilter());
-        }
-        return profileImage;
-    }
-
-    public void setProfileImage(StringFilter profileImage) {
-        this.profileImage = profileImage;
-    }
-
     public BooleanFilter getIsVerified() {
         return isVerified;
     }
@@ -308,25 +254,6 @@ public class AppUserCriteria implements Serializable, Criteria {
         this.isActive = isActive;
     }
 
-    public InstantFilter getCreatedAt() {
-        return createdAt;
-    }
-
-    public Optional<InstantFilter> optionalCreatedAt() {
-        return Optional.ofNullable(createdAt);
-    }
-
-    public InstantFilter createdAt() {
-        if (createdAt == null) {
-            setCreatedAt(new InstantFilter());
-        }
-        return createdAt;
-    }
-
-    public void setCreatedAt(InstantFilter createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public InstantFilter getLastLoginAt() {
         return lastLoginAt;
     }
@@ -346,23 +273,118 @@ public class AppUserCriteria implements Serializable, Criteria {
         this.lastLoginAt = lastLoginAt;
     }
 
-    public LongFilter getPreferencesId() {
-        return preferencesId;
+    public InstantFilter getCreatedAt() {
+        return createdAt;
     }
 
-    public Optional<LongFilter> optionalPreferencesId() {
-        return Optional.ofNullable(preferencesId);
+    public Optional<InstantFilter> optionalCreatedAt() {
+        return Optional.ofNullable(createdAt);
     }
 
-    public LongFilter preferencesId() {
-        if (preferencesId == null) {
-            setPreferencesId(new LongFilter());
+    public InstantFilter createdAt() {
+        if (createdAt == null) {
+            setCreatedAt(new InstantFilter());
         }
-        return preferencesId;
+        return createdAt;
     }
 
-    public void setPreferencesId(LongFilter preferencesId) {
-        this.preferencesId = preferencesId;
+    public void setCreatedAt(InstantFilter createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public InstantFilter getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Optional<InstantFilter> optionalUpdatedAt() {
+        return Optional.ofNullable(updatedAt);
+    }
+
+    public InstantFilter updatedAt() {
+        if (updatedAt == null) {
+            setUpdatedAt(new InstantFilter());
+        }
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(InstantFilter updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public BooleanFilter getIsDeleted() {
+        return isDeleted;
+    }
+
+    public Optional<BooleanFilter> optionalIsDeleted() {
+        return Optional.ofNullable(isDeleted);
+    }
+
+    public BooleanFilter isDeleted() {
+        if (isDeleted == null) {
+            setIsDeleted(new BooleanFilter());
+        }
+        return isDeleted;
+    }
+
+    public void setIsDeleted(BooleanFilter isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public InstantFilter getDeletedAt() {
+        return deletedAt;
+    }
+
+    public Optional<InstantFilter> optionalDeletedAt() {
+        return Optional.ofNullable(deletedAt);
+    }
+
+    public InstantFilter deletedAt() {
+        if (deletedAt == null) {
+            setDeletedAt(new InstantFilter());
+        }
+        return deletedAt;
+    }
+
+    public void setDeletedAt(InstantFilter deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public UUIDFilter getDeletedBy() {
+        return deletedBy;
+    }
+
+    public Optional<UUIDFilter> optionalDeletedBy() {
+        return Optional.ofNullable(deletedBy);
+    }
+
+    public UUIDFilter deletedBy() {
+        if (deletedBy == null) {
+            setDeletedBy(new UUIDFilter());
+        }
+        return deletedBy;
+    }
+
+    public void setDeletedBy(UUIDFilter deletedBy) {
+        this.deletedBy = deletedBy;
+    }
+
+    public LongFilter getProfileId() {
+        return profileId;
+    }
+
+    public Optional<LongFilter> optionalProfileId() {
+        return Optional.ofNullable(profileId);
+    }
+
+    public LongFilter profileId() {
+        if (profileId == null) {
+            setProfileId(new LongFilter());
+        }
+        return profileId;
+    }
+
+    public void setProfileId(LongFilter profileId) {
+        this.profileId = profileId;
     }
 
     public Boolean getDistinct() {
@@ -395,20 +417,21 @@ public class AppUserCriteria implements Serializable, Criteria {
         final AppUserCriteria that = (AppUserCriteria) o;
         return (
             Objects.equals(id, that.id) &&
-            Objects.equals(username, that.username) &&
+            Objects.equals(keycloakId, that.keycloakId) &&
             Objects.equals(email, that.email) &&
             Objects.equals(phoneNumber, that.phoneNumber) &&
             Objects.equals(firstName, that.firstName) &&
             Objects.equals(lastName, that.lastName) &&
             Objects.equals(dateOfBirth, that.dateOfBirth) &&
-            Objects.equals(idNumber, that.idNumber) &&
-            Objects.equals(nationality, that.nationality) &&
-            Objects.equals(profileImage, that.profileImage) &&
             Objects.equals(isVerified, that.isVerified) &&
             Objects.equals(isActive, that.isActive) &&
-            Objects.equals(createdAt, that.createdAt) &&
             Objects.equals(lastLoginAt, that.lastLoginAt) &&
-            Objects.equals(preferencesId, that.preferencesId) &&
+            Objects.equals(createdAt, that.createdAt) &&
+            Objects.equals(updatedAt, that.updatedAt) &&
+            Objects.equals(isDeleted, that.isDeleted) &&
+            Objects.equals(deletedAt, that.deletedAt) &&
+            Objects.equals(deletedBy, that.deletedBy) &&
+            Objects.equals(profileId, that.profileId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -417,20 +440,21 @@ public class AppUserCriteria implements Serializable, Criteria {
     public int hashCode() {
         return Objects.hash(
             id,
-            username,
+            keycloakId,
             email,
             phoneNumber,
             firstName,
             lastName,
             dateOfBirth,
-            idNumber,
-            nationality,
-            profileImage,
             isVerified,
             isActive,
-            createdAt,
             lastLoginAt,
-            preferencesId,
+            createdAt,
+            updatedAt,
+            isDeleted,
+            deletedAt,
+            deletedBy,
+            profileId,
             distinct
         );
     }
@@ -440,20 +464,21 @@ public class AppUserCriteria implements Serializable, Criteria {
     public String toString() {
         return "AppUserCriteria{" +
             optionalId().map(f -> "id=" + f + ", ").orElse("") +
-            optionalUsername().map(f -> "username=" + f + ", ").orElse("") +
+            optionalKeycloakId().map(f -> "keycloakId=" + f + ", ").orElse("") +
             optionalEmail().map(f -> "email=" + f + ", ").orElse("") +
             optionalPhoneNumber().map(f -> "phoneNumber=" + f + ", ").orElse("") +
             optionalFirstName().map(f -> "firstName=" + f + ", ").orElse("") +
             optionalLastName().map(f -> "lastName=" + f + ", ").orElse("") +
             optionalDateOfBirth().map(f -> "dateOfBirth=" + f + ", ").orElse("") +
-            optionalIdNumber().map(f -> "idNumber=" + f + ", ").orElse("") +
-            optionalNationality().map(f -> "nationality=" + f + ", ").orElse("") +
-            optionalProfileImage().map(f -> "profileImage=" + f + ", ").orElse("") +
             optionalIsVerified().map(f -> "isVerified=" + f + ", ").orElse("") +
             optionalIsActive().map(f -> "isActive=" + f + ", ").orElse("") +
-            optionalCreatedAt().map(f -> "createdAt=" + f + ", ").orElse("") +
             optionalLastLoginAt().map(f -> "lastLoginAt=" + f + ", ").orElse("") +
-            optionalPreferencesId().map(f -> "preferencesId=" + f + ", ").orElse("") +
+            optionalCreatedAt().map(f -> "createdAt=" + f + ", ").orElse("") +
+            optionalUpdatedAt().map(f -> "updatedAt=" + f + ", ").orElse("") +
+            optionalIsDeleted().map(f -> "isDeleted=" + f + ", ").orElse("") +
+            optionalDeletedAt().map(f -> "deletedAt=" + f + ", ").orElse("") +
+            optionalDeletedBy().map(f -> "deletedBy=" + f + ", ").orElse("") +
+            optionalProfileId().map(f -> "profileId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

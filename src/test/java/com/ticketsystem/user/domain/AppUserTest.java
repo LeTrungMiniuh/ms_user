@@ -1,7 +1,7 @@
 package com.ticketsystem.user.domain;
 
 import static com.ticketsystem.user.domain.AppUserTestSamples.*;
-import static com.ticketsystem.user.domain.UserPreferencesTestSamples.*;
+import static com.ticketsystem.user.domain.ProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ticketsystem.user.web.rest.TestUtil;
@@ -24,14 +24,14 @@ class AppUserTest {
     }
 
     @Test
-    void preferencesTest() {
+    void profileTest() {
         AppUser appUser = getAppUserRandomSampleGenerator();
-        UserPreferences userPreferencesBack = getUserPreferencesRandomSampleGenerator();
+        Profile profileBack = getProfileRandomSampleGenerator();
 
-        appUser.setPreferences(userPreferencesBack);
-        assertThat(appUser.getPreferences()).isEqualTo(userPreferencesBack);
+        appUser.setProfile(profileBack);
+        assertThat(appUser.getProfile()).isEqualTo(profileBack);
 
-        appUser.preferences(null);
-        assertThat(appUser.getPreferences()).isNull();
+        appUser.profile(null);
+        assertThat(appUser.getProfile()).isNull();
     }
 }

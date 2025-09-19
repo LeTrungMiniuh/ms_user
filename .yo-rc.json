@@ -9,7 +9,7 @@
     "databaseType": "sql",
     "devDatabaseType": "mysql",
     "enableSwaggerCodegen": true,
-    "entities": ["AppUser", "UserPreferences"],
+    "entities": ["AppUser", "Profile"],
     "gatewayServerPort": "8080",
     "jhipsterVersion": "8.11.0",
     "jwtSecretKey": "MWRmNDA1MTg4YThhODg1OGU3YTdhZWYxZDA3NTRkMzU0ZThmMjI3NTk2MTI5Mjg5ZjU5YmUxMjZiMDJiYTViY2MwMDhiYjU5YjYyZjU1YWY4NGE2Y2ExY2FjOThlNGI2ZTFkNTVjYTM1MThlMTZjODBlZjRiMDMwMjA5YTMyOWY=",

@@ -8,13 +8,13 @@
     <!--
         Added the constraints for entity AppUser.
     -->
-    <changeSet id="20250914130730-2" author="jhipster">
+    <changeSet id="20250914120900-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="preferences_id"
+        <addForeignKeyConstraint baseColumnNames="profile_id"
                                  baseTableName="app_user"
-                                 constraintName="fk_app_user__preferences_id"
+                                 constraintName="fk_app_user__profile_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="user_preferences"
+                                 referencedTableName="profile"
                                  />
     </changeSet>
 </databaseChangeLog>

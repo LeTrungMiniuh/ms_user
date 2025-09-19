@@ -1,18 +1,14 @@
 {
   "annotations": {
-    "changelogDate": "20250914130730"
+    "changelogDate": "20250914120900"
   },
   "applications": ["ms_user"],
-  "clientRootFolder": "ms_user",
-  "databaseType": "sql",
   "dto": "mapstruct",
   "fields": [
     {
-      "fieldName": "username",
-      "fieldType": "String",
-      "fieldValidateRules": ["required", "minlength", "maxlength", "unique"],
-      "fieldValidateRulesMaxlength": "60",
-      "fieldValidateRulesMinlength": "3"
+      "fieldName": "keycloakId",
+      "fieldType": "UUID",
+      "fieldValidateRules": ["required", "unique"]
     },
     {
       "fieldName": "email",
@@ -37,19 +33,6 @@
       "fieldType": "LocalDate"
     },
     {
-      "fieldName": "idNumber",
-      "fieldType": "String",
-      "fieldValidateRules": ["unique"]
-    },
-    {
-      "fieldName": "nationality",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "profileImage",
-      "fieldType": "String"
-    },
-    {
       "fieldName": "isVerified",
       "fieldType": "Boolean"
     },
@@ -59,13 +42,29 @@
       "fieldValidateRules": ["required"]
     },
     {
+      "fieldName": "lastLoginAt",
+      "fieldType": "Instant"
+    },
+    {
       "fieldName": "createdAt",
       "fieldType": "Instant",
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "lastLoginAt",
+      "fieldName": "updatedAt",
       "fieldType": "Instant"
+    },
+    {
+      "fieldName": "isDeleted",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "deletedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "deletedBy",
+      "fieldType": "UUID"
     }
   ],
   "jpaMetamodelFiltering": true,
@@ -73,13 +72,12 @@
   "name": "AppUser",
   "relationships": [
     {
-      "otherEntityName": "userPreferences",
-      "otherEntityRelationshipName": "appUser",
-      "relationshipName": "preferences",
+      "otherEntityName": "profile",
+      "otherEntityRelationshipName": "user",
+      "relationshipName": "profile",
       "relationshipSide": "left",
       "relationshipType": "one-to-one"
     }
   ],
-  "searchEngine": "no",
   "service": "serviceImpl"
 }

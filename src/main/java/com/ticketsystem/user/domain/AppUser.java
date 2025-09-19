@@ -6,8 +6,11 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 /**
  * A AppUser.
@@ -26,9 +29,9 @@ public class AppUser implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 3, max = 60)
-    @Column(name = "username", length = 60, nullable = false, unique = true)
-    private String username;
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "keycloak_id", length = 36, nullable = false, unique = true)
+    private UUID keycloakId;
 
     @NotNull
     @Pattern(regexp = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
@@ -47,15 +50,6 @@ public class AppUser implements Serializable {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "id_number", unique = true)
-    private String idNumber;
-
-    @Column(name = "nationality")
-    private String nationality;
-
-    @Column(name = "profile_image")
-    private String profileImage;
-
     @Column(name = "is_verified")
     private Boolean isVerified;
 
@@ -63,17 +57,30 @@ public class AppUser implements Serializable {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @Column(name = "last_login_at")
+    private Instant lastLoginAt;
+
     @NotNull
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
 
-    @Column(name = "last_login_at")
-    private Instant lastLoginAt;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
-    @JsonIgnoreProperties(value = { "appUser" }, allowSetters = true)
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(name = "deleted_by", length = 36)
+    private UUID deletedBy;
+
+    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
-    private UserPreferences preferences;
+    private Profile profile;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -90,17 +97,17 @@ public class AppUser implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return this.username;
+    public UUID getKeycloakId() {
+        return this.keycloakId;
     }
 
-    public AppUser username(String username) {
-        this.setUsername(username);
+    public AppUser keycloakId(UUID keycloakId) {
+        this.setKeycloakId(keycloakId);
         return this;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setKeycloakId(UUID keycloakId) {
+        this.keycloakId = keycloakId;
     }
 
     public String getEmail() {
@@ -168,45 +175,6 @@ public class AppUser implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getIdNumber() {
-        return this.idNumber;
-    }
-
-    public AppUser idNumber(String idNumber) {
-        this.setIdNumber(idNumber);
-        return this;
-    }
-
-    public void setIdNumber(String idNumber) {
-        this.idNumber = idNumber;
-    }
-
-    public String getNationality() {
-        return this.nationality;
-    }
-
-    public AppUser nationality(String nationality) {
-        this.setNationality(nationality);
-        return this;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getProfileImage() {
-        return this.profileImage;
-    }
-
-    public AppUser profileImage(String profileImage) {
-        this.setProfileImage(profileImage);
-        return this;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
     public Boolean getIsVerified() {
         return this.isVerified;
     }
@@ -233,19 +201,6 @@ public class AppUser implements Serializable {
         this.isActive = isActive;
     }
 
-    public Instant getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public AppUser createdAt(Instant createdAt) {
-        this.setCreatedAt(createdAt);
-        return this;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Instant getLastLoginAt() {
         return this.lastLoginAt;
     }
@@ -259,16 +214,81 @@ public class AppUser implements Serializable {
         this.lastLoginAt = lastLoginAt;
     }
 
-    public UserPreferences getPreferences() {
-        return this.preferences;
+    public Instant getCreatedAt() {
+        return this.createdAt;
     }
 
-    public void setPreferences(UserPreferences userPreferences) {
-        this.preferences = userPreferences;
+    public AppUser createdAt(Instant createdAt) {
+        this.setCreatedAt(createdAt);
+        return this;
     }
 
-    public AppUser preferences(UserPreferences userPreferences) {
-        this.setPreferences(userPreferences);
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public AppUser updatedAt(Instant updatedAt) {
+        this.setUpdatedAt(updatedAt);
+        return this;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Boolean getIsDeleted() {
+        return this.isDeleted;
+    }
+
+    public AppUser isDeleted(Boolean isDeleted) {
+        this.setIsDeleted(isDeleted);
+        return this;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Instant getDeletedAt() {
+        return this.deletedAt;
+    }
+
+    public AppUser deletedAt(Instant deletedAt) {
+        this.setDeletedAt(deletedAt);
+        return this;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public UUID getDeletedBy() {
+        return this.deletedBy;
+    }
+
+    public AppUser deletedBy(UUID deletedBy) {
+        this.setDeletedBy(deletedBy);
+        return this;
+    }
+
+    public void setDeletedBy(UUID deletedBy) {
+        this.deletedBy = deletedBy;
+    }
+
+    public Profile getProfile() {
+        return this.profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public AppUser profile(Profile profile) {
+        this.setProfile(profile);
         return this;
     }
 
@@ -296,19 +316,20 @@ public class AppUser implements Serializable {
     public String toString() {
         return "AppUser{" +
             "id=" + getId() +
-            ", username='" + getUsername() + "'" +
+            ", keycloakId='" + getKeycloakId() + "'" +
             ", email='" + getEmail() + "'" +
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", dateOfBirth='" + getDateOfBirth() + "'" +
-            ", idNumber='" + getIdNumber() + "'" +
-            ", nationality='" + getNationality() + "'" +
-            ", profileImage='" + getProfileImage() + "'" +
             ", isVerified='" + getIsVerified() + "'" +
             ", isActive='" + getIsActive() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
             ", lastLoginAt='" + getLastLoginAt() + "'" +
+            ", createdAt='" + getCreatedAt() + "'" +
+            ", updatedAt='" + getUpdatedAt() + "'" +
+            ", isDeleted='" + getIsDeleted() + "'" +
+            ", deletedAt='" + getDeletedAt() + "'" +
+            ", deletedBy='" + getDeletedBy() + "'" +
             "}";
     }
 }

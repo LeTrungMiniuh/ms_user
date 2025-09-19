@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * A DTO for the {@link com.ticketsystem.user.domain.AppUser} entity.
@@ -15,8 +16,7 @@ public class AppUserDTO implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 3, max = 60)
-    private String username;
+    private UUID keycloakId;
 
     @NotNull
     @Pattern(regexp = "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
@@ -30,23 +30,25 @@ public class AppUserDTO implements Serializable {
 
     private LocalDate dateOfBirth;
 
-    private String idNumber;
-
-    private String nationality;
-
-    private String profileImage;
-
     private Boolean isVerified;
 
     @NotNull
     private Boolean isActive;
 
+    private Instant lastLoginAt;
+
     @NotNull
     private Instant createdAt;
 
-    private Instant lastLoginAt;
+    private Instant updatedAt;
 
-    private UserPreferencesDTO preferences;
+    private Boolean isDeleted;
+
+    private Instant deletedAt;
+
+    private UUID deletedBy;
+
+    private ProfileDTO profile;
 
     public Long getId() {
         return id;
@@ -56,12 +58,12 @@ public class AppUserDTO implements Serializable {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public UUID getKeycloakId() {
+        return keycloakId;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setKeycloakId(UUID keycloakId) {
+        this.keycloakId = keycloakId;
     }
 
     public String getEmail() {
@@ -104,30 +106,6 @@ public class AppUserDTO implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getIdNumber() {
-        return idNumber;
-    }
-
-    public void setIdNumber(String idNumber) {
-        this.idNumber = idNumber;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
-    public String getProfileImage() {
-        return profileImage;
-    }
-
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
     public Boolean getIsVerified() {
         return isVerified;
     }
@@ -144,14 +122,6 @@ public class AppUserDTO implements Serializable {
         this.isActive = isActive;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Instant getLastLoginAt() {
         return lastLoginAt;
     }
@@ -160,12 +130,52 @@ public class AppUserDTO implements Serializable {
         this.lastLoginAt = lastLoginAt;
     }
 
-    public UserPreferencesDTO getPreferences() {
-        return preferences;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public void setPreferences(UserPreferencesDTO preferences) {
-        this.preferences = preferences;
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public UUID getDeletedBy() {
+        return deletedBy;
+    }
+
+    public void setDeletedBy(UUID deletedBy) {
+        this.deletedBy = deletedBy;
+    }
+
+    public ProfileDTO getProfile() {
+        return profile;
+    }
+
+    public void setProfile(ProfileDTO profile) {
+        this.profile = profile;
     }
 
     @Override
@@ -194,20 +204,21 @@ public class AppUserDTO implements Serializable {
     public String toString() {
         return "AppUserDTO{" +
             "id=" + getId() +
-            ", username='" + getUsername() + "'" +
+            ", keycloakId='" + getKeycloakId() + "'" +
             ", email='" + getEmail() + "'" +
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", dateOfBirth='" + getDateOfBirth() + "'" +
-            ", idNumber='" + getIdNumber() + "'" +
-            ", nationality='" + getNationality() + "'" +
-            ", profileImage='" + getProfileImage() + "'" +
             ", isVerified='" + getIsVerified() + "'" +
             ", isActive='" + getIsActive() + "'" +
-            ", createdAt='" + getCreatedAt() + "'" +
             ", lastLoginAt='" + getLastLoginAt() + "'" +
-            ", preferences=" + getPreferences() +
+            ", createdAt='" + getCreatedAt() + "'" +
+            ", updatedAt='" + getUpdatedAt() + "'" +
+            ", isDeleted='" + getIsDeleted() + "'" +
+            ", deletedAt='" + getDeletedAt() + "'" +
+            ", deletedBy='" + getDeletedBy() + "'" +
+            ", profile=" + getProfile() +
             "}";
     }
 }

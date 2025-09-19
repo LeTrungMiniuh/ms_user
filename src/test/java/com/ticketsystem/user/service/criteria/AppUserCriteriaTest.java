@@ -76,20 +76,21 @@ class AppUserCriteriaTest {
 
     private static void setAllFilters(AppUserCriteria appUserCriteria) {
         appUserCriteria.id();
-        appUserCriteria.username();
+        appUserCriteria.keycloakId();
         appUserCriteria.email();
         appUserCriteria.phoneNumber();
         appUserCriteria.firstName();
         appUserCriteria.lastName();
         appUserCriteria.dateOfBirth();
-        appUserCriteria.idNumber();
-        appUserCriteria.nationality();
-        appUserCriteria.profileImage();
         appUserCriteria.isVerified();
         appUserCriteria.isActive();
-        appUserCriteria.createdAt();
         appUserCriteria.lastLoginAt();
-        appUserCriteria.preferencesId();
+        appUserCriteria.createdAt();
+        appUserCriteria.updatedAt();
+        appUserCriteria.isDeleted();
+        appUserCriteria.deletedAt();
+        appUserCriteria.deletedBy();
+        appUserCriteria.profileId();
         appUserCriteria.distinct();
     }
 
@@ -97,20 +98,21 @@ class AppUserCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId()) &&
-                condition.apply(criteria.getUsername()) &&
+                condition.apply(criteria.getKeycloakId()) &&
                 condition.apply(criteria.getEmail()) &&
                 condition.apply(criteria.getPhoneNumber()) &&
                 condition.apply(criteria.getFirstName()) &&
                 condition.apply(criteria.getLastName()) &&
                 condition.apply(criteria.getDateOfBirth()) &&
-                condition.apply(criteria.getIdNumber()) &&
-                condition.apply(criteria.getNationality()) &&
-                condition.apply(criteria.getProfileImage()) &&
                 condition.apply(criteria.getIsVerified()) &&
                 condition.apply(criteria.getIsActive()) &&
-                condition.apply(criteria.getCreatedAt()) &&
                 condition.apply(criteria.getLastLoginAt()) &&
-                condition.apply(criteria.getPreferencesId()) &&
+                condition.apply(criteria.getCreatedAt()) &&
+                condition.apply(criteria.getUpdatedAt()) &&
+                condition.apply(criteria.getIsDeleted()) &&
+                condition.apply(criteria.getDeletedAt()) &&
+                condition.apply(criteria.getDeletedBy()) &&
+                condition.apply(criteria.getProfileId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -120,20 +122,21 @@ class AppUserCriteriaTest {
         return new Condition<>(
             criteria ->
                 condition.apply(criteria.getId(), copy.getId()) &&
-                condition.apply(criteria.getUsername(), copy.getUsername()) &&
+                condition.apply(criteria.getKeycloakId(), copy.getKeycloakId()) &&
                 condition.apply(criteria.getEmail(), copy.getEmail()) &&
                 condition.apply(criteria.getPhoneNumber(), copy.getPhoneNumber()) &&
                 condition.apply(criteria.getFirstName(), copy.getFirstName()) &&
                 condition.apply(criteria.getLastName(), copy.getLastName()) &&
                 condition.apply(criteria.getDateOfBirth(), copy.getDateOfBirth()) &&
-                condition.apply(criteria.getIdNumber(), copy.getIdNumber()) &&
-                condition.apply(criteria.getNationality(), copy.getNationality()) &&
-                condition.apply(criteria.getProfileImage(), copy.getProfileImage()) &&
                 condition.apply(criteria.getIsVerified(), copy.getIsVerified()) &&
                 condition.apply(criteria.getIsActive(), copy.getIsActive()) &&
-                condition.apply(criteria.getCreatedAt(), copy.getCreatedAt()) &&
                 condition.apply(criteria.getLastLoginAt(), copy.getLastLoginAt()) &&
-                condition.apply(criteria.getPreferencesId(), copy.getPreferencesId()) &&
+                condition.apply(criteria.getCreatedAt(), copy.getCreatedAt()) &&
+                condition.apply(criteria.getUpdatedAt(), copy.getUpdatedAt()) &&
+                condition.apply(criteria.getIsDeleted(), copy.getIsDeleted()) &&
+                condition.apply(criteria.getDeletedAt(), copy.getDeletedAt()) &&
+                condition.apply(criteria.getDeletedBy(), copy.getDeletedBy()) &&
+                condition.apply(criteria.getProfileId(), copy.getProfileId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

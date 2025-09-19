@@ -72,22 +72,21 @@ public class AppUserQueryService extends QueryService<AppUser> {
             specification = Specification.allOf(
                 Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : null,
                 buildRangeSpecification(criteria.getId(), AppUser_.id),
-                buildStringSpecification(criteria.getUsername(), AppUser_.username),
+                buildSpecification(criteria.getKeycloakId(), AppUser_.keycloakId),
                 buildStringSpecification(criteria.getEmail(), AppUser_.email),
                 buildStringSpecification(criteria.getPhoneNumber(), AppUser_.phoneNumber),
                 buildStringSpecification(criteria.getFirstName(), AppUser_.firstName),
                 buildStringSpecification(criteria.getLastName(), AppUser_.lastName),
                 buildRangeSpecification(criteria.getDateOfBirth(), AppUser_.dateOfBirth),
-                buildStringSpecification(criteria.getIdNumber(), AppUser_.idNumber),
-                buildStringSpecification(criteria.getNationality(), AppUser_.nationality),
-                buildStringSpecification(criteria.getProfileImage(), AppUser_.profileImage),
                 buildSpecification(criteria.getIsVerified(), AppUser_.isVerified),
                 buildSpecification(criteria.getIsActive(), AppUser_.isActive),
-                buildRangeSpecification(criteria.getCreatedAt(), AppUser_.createdAt),
                 buildRangeSpecification(criteria.getLastLoginAt(), AppUser_.lastLoginAt),
-                buildSpecification(criteria.getPreferencesId(), root ->
-                    root.join(AppUser_.preferences, JoinType.LEFT).get(UserPreferences_.id)
-                )
+                buildRangeSpecification(criteria.getCreatedAt(), AppUser_.createdAt),
+                buildRangeSpecification(criteria.getUpdatedAt(), AppUser_.updatedAt),
+                buildSpecification(criteria.getIsDeleted(), AppUser_.isDeleted),
+                buildRangeSpecification(criteria.getDeletedAt(), AppUser_.deletedAt),
+                buildSpecification(criteria.getDeletedBy(), AppUser_.deletedBy),
+                buildSpecification(criteria.getProfileId(), root -> root.join(AppUser_.profile, JoinType.LEFT).get(Profile_.id))
             );
         }
         return specification;

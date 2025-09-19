@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticketsystem.user.IntegrationTest;
 import com.ticketsystem.user.domain.AppUser;
-import com.ticketsystem.user.domain.UserPreferences;
+import com.ticketsystem.user.domain.Profile;
 import com.ticketsystem.user.repository.AppUserRepository;
 import com.ticketsystem.user.service.dto.AppUserDTO;
 import com.ticketsystem.user.service.mapper.AppUserMapper;
@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,8 +41,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class AppUserResourceIT {
 
-    private static final String DEFAULT_USERNAME = "AAAAAAAAAA";
-    private static final String UPDATED_USERNAME = "BBBBBBBBBB";
+    private static final UUID DEFAULT_KEYCLOAK_ID = UUID.randomUUID();
+    private static final UUID UPDATED_KEYCLOAK_ID = UUID.randomUUID();
 
     private static final String DEFAULT_EMAIL = "?O@\\)q.!*_s7";
     private static final String UPDATED_EMAIL = "dGr-M@\\1jbLQ..\\)Gr";
@@ -59,26 +60,29 @@ class AppUserResourceIT {
     private static final LocalDate UPDATED_DATE_OF_BIRTH = LocalDate.now(ZoneId.systemDefault());
     private static final LocalDate SMALLER_DATE_OF_BIRTH = LocalDate.ofEpochDay(-1L);
 
-    private static final String DEFAULT_ID_NUMBER = "AAAAAAAAAA";
-    private static final String UPDATED_ID_NUMBER = "BBBBBBBBBB";
-
-    private static final String DEFAULT_NATIONALITY = "AAAAAAAAAA";
-    private static final String UPDATED_NATIONALITY = "BBBBBBBBBB";
-
-    private static final String DEFAULT_PROFILE_IMAGE = "AAAAAAAAAA";
-    private static final String UPDATED_PROFILE_IMAGE = "BBBBBBBBBB";
-
     private static final Boolean DEFAULT_IS_VERIFIED = false;
     private static final Boolean UPDATED_IS_VERIFIED = true;
 
     private static final Boolean DEFAULT_IS_ACTIVE = false;
     private static final Boolean UPDATED_IS_ACTIVE = true;
 
+    private static final Instant DEFAULT_LAST_LOGIN_AT = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_LAST_LOGIN_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     private static final Instant DEFAULT_CREATED_AT = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CREATED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final Instant DEFAULT_LAST_LOGIN_AT = Instant.ofEpochMilli(0L);
-    private static final Instant UPDATED_LAST_LOGIN_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+    private static final Instant DEFAULT_UPDATED_AT = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_UPDATED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final Boolean DEFAULT_IS_DELETED = false;
+    private static final Boolean UPDATED_IS_DELETED = true;
+
+    private static final Instant DEFAULT_DELETED_AT = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_DELETED_AT = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final UUID DEFAULT_DELETED_BY = UUID.randomUUID();
+    private static final UUID UPDATED_DELETED_BY = UUID.randomUUID();
 
     private static final String ENTITY_API_URL = "/api/app-users";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -113,19 +117,20 @@ class AppUserResourceIT {
      */
     public static AppUser createEntity() {
         return new AppUser()
-            .username(DEFAULT_USERNAME)
+            .keycloakId(DEFAULT_KEYCLOAK_ID)
             .email(DEFAULT_EMAIL)
             .phoneNumber(DEFAULT_PHONE_NUMBER)
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
             .dateOfBirth(DEFAULT_DATE_OF_BIRTH)
-            .idNumber(DEFAULT_ID_NUMBER)
-            .nationality(DEFAULT_NATIONALITY)
-            .profileImage(DEFAULT_PROFILE_IMAGE)
             .isVerified(DEFAULT_IS_VERIFIED)
             .isActive(DEFAULT_IS_ACTIVE)
+            .lastLoginAt(DEFAULT_LAST_LOGIN_AT)
             .createdAt(DEFAULT_CREATED_AT)
-            .lastLoginAt(DEFAULT_LAST_LOGIN_AT);
+            .updatedAt(DEFAULT_UPDATED_AT)
+            .isDeleted(DEFAULT_IS_DELETED)
+            .deletedAt(DEFAULT_DELETED_AT)
+            .deletedBy(DEFAULT_DELETED_BY);
     }
 
     /**
@@ -136,19 +141,20 @@ class AppUserResourceIT {
      */
     public static AppUser createUpdatedEntity() {
         return new AppUser()
-            .username(UPDATED_USERNAME)
+            .keycloakId(UPDATED_KEYCLOAK_ID)
             .email(UPDATED_EMAIL)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .dateOfBirth(UPDATED_DATE_OF_BIRTH)
-            .idNumber(UPDATED_ID_NUMBER)
-            .nationality(UPDATED_NATIONALITY)
-            .profileImage(UPDATED_PROFILE_IMAGE)
             .isVerified(UPDATED_IS_VERIFIED)
             .isActive(UPDATED_IS_ACTIVE)
+            .lastLoginAt(UPDATED_LAST_LOGIN_AT)
             .createdAt(UPDATED_CREATED_AT)
-            .lastLoginAt(UPDATED_LAST_LOGIN_AT);
+            .updatedAt(UPDATED_UPDATED_AT)
+            .isDeleted(UPDATED_IS_DELETED)
+            .deletedAt(UPDATED_DELETED_AT)
+            .deletedBy(UPDATED_DELETED_BY);
     }
 
     @BeforeEach
@@ -210,10 +216,10 @@ class AppUserResourceIT {
 
     @Test
     @Transactional
-    void checkUsernameIsRequired() throws Exception {
+    void checkKeycloakIdIsRequired() throws Exception {
         long databaseSizeBeforeTest = getRepositoryCount();
         // set the field null
-        appUser.setUsername(null);
+        appUser.setKeycloakId(null);
 
         // Create the AppUser, which fails.
         AppUserDTO appUserDTO = appUserMapper.toDto(appUser);
@@ -288,19 +294,20 @@ class AppUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(appUser.getId().intValue())))
-            .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME)))
+            .andExpect(jsonPath("$.[*].keycloakId").value(hasItem(DEFAULT_KEYCLOAK_ID.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].dateOfBirth").value(hasItem(DEFAULT_DATE_OF_BIRTH.toString())))
-            .andExpect(jsonPath("$.[*].idNumber").value(hasItem(DEFAULT_ID_NUMBER)))
-            .andExpect(jsonPath("$.[*].nationality").value(hasItem(DEFAULT_NATIONALITY)))
-            .andExpect(jsonPath("$.[*].profileImage").value(hasItem(DEFAULT_PROFILE_IMAGE)))
             .andExpect(jsonPath("$.[*].isVerified").value(hasItem(DEFAULT_IS_VERIFIED)))
             .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE)))
+            .andExpect(jsonPath("$.[*].lastLoginAt").value(hasItem(DEFAULT_LAST_LOGIN_AT.toString())))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].lastLoginAt").value(hasItem(DEFAULT_LAST_LOGIN_AT.toString())));
+            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())))
+            .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED)))
+            .andExpect(jsonPath("$.[*].deletedAt").value(hasItem(DEFAULT_DELETED_AT.toString())))
+            .andExpect(jsonPath("$.[*].deletedBy").value(hasItem(DEFAULT_DELETED_BY.toString())));
     }
 
     @Test
@@ -315,19 +322,20 @@ class AppUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(appUser.getId().intValue()))
-            .andExpect(jsonPath("$.username").value(DEFAULT_USERNAME))
+            .andExpect(jsonPath("$.keycloakId").value(DEFAULT_KEYCLOAK_ID.toString()))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
             .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
             .andExpect(jsonPath("$.dateOfBirth").value(DEFAULT_DATE_OF_BIRTH.toString()))
-            .andExpect(jsonPath("$.idNumber").value(DEFAULT_ID_NUMBER))
-            .andExpect(jsonPath("$.nationality").value(DEFAULT_NATIONALITY))
-            .andExpect(jsonPath("$.profileImage").value(DEFAULT_PROFILE_IMAGE))
             .andExpect(jsonPath("$.isVerified").value(DEFAULT_IS_VERIFIED))
             .andExpect(jsonPath("$.isActive").value(DEFAULT_IS_ACTIVE))
+            .andExpect(jsonPath("$.lastLoginAt").value(DEFAULT_LAST_LOGIN_AT.toString()))
             .andExpect(jsonPath("$.createdAt").value(DEFAULT_CREATED_AT.toString()))
-            .andExpect(jsonPath("$.lastLoginAt").value(DEFAULT_LAST_LOGIN_AT.toString()));
+            .andExpect(jsonPath("$.updatedAt").value(DEFAULT_UPDATED_AT.toString()))
+            .andExpect(jsonPath("$.isDeleted").value(DEFAULT_IS_DELETED))
+            .andExpect(jsonPath("$.deletedAt").value(DEFAULT_DELETED_AT.toString()))
+            .andExpect(jsonPath("$.deletedBy").value(DEFAULT_DELETED_BY.toString()));
     }
 
     @Test
@@ -347,52 +355,32 @@ class AppUserResourceIT {
 
     @Test
     @Transactional
-    void getAllAppUsersByUsernameIsEqualToSomething() throws Exception {
+    void getAllAppUsersByKeycloakIdIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedAppUser = appUserRepository.saveAndFlush(appUser);
 
-        // Get all the appUserList where username equals to
-        defaultAppUserFiltering("username.equals=" + DEFAULT_USERNAME, "username.equals=" + UPDATED_USERNAME);
+        // Get all the appUserList where keycloakId equals to
+        defaultAppUserFiltering("keycloakId.equals=" + DEFAULT_KEYCLOAK_ID, "keycloakId.equals=" + UPDATED_KEYCLOAK_ID);
     }
 
     @Test
     @Transactional
-    void getAllAppUsersByUsernameIsInShouldWork() throws Exception {
+    void getAllAppUsersByKeycloakIdIsInShouldWork() throws Exception {
         // Initialize the database
         insertedAppUser = appUserRepository.saveAndFlush(appUser);
 
-        // Get all the appUserList where username in
-        defaultAppUserFiltering("username.in=" + DEFAULT_USERNAME + "," + UPDATED_USERNAME, "username.in=" + UPDATED_USERNAME);
+        // Get all the appUserList where keycloakId in
+        defaultAppUserFiltering("keycloakId.in=" + DEFAULT_KEYCLOAK_ID + "," + UPDATED_KEYCLOAK_ID, "keycloakId.in=" + UPDATED_KEYCLOAK_ID);
     }
 
     @Test
     @Transactional
-    void getAllAppUsersByUsernameIsNullOrNotNull() throws Exception {
+    void getAllAppUsersByKeycloakIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         insertedAppUser = appUserRepository.saveAndFlush(appUser);
 
-        // Get all the appUserList where username is not null
-        defaultAppUserFiltering("username.specified=true", "username.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByUsernameContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where username contains
-        defaultAppUserFiltering("username.contains=" + DEFAULT_USERNAME, "username.contains=" + UPDATED_USERNAME);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByUsernameNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where username does not contain
-        defaultAppUserFiltering("username.doesNotContain=" + UPDATED_USERNAME, "username.doesNotContain=" + DEFAULT_USERNAME);
+        // Get all the appUserList where keycloakId is not null
+        defaultAppUserFiltering("keycloakId.specified=true", "keycloakId.specified=false");
     }
 
     @Test
@@ -679,165 +667,6 @@ class AppUserResourceIT {
 
     @Test
     @Transactional
-    void getAllAppUsersByIdNumberIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where idNumber equals to
-        defaultAppUserFiltering("idNumber.equals=" + DEFAULT_ID_NUMBER, "idNumber.equals=" + UPDATED_ID_NUMBER);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByIdNumberIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where idNumber in
-        defaultAppUserFiltering("idNumber.in=" + DEFAULT_ID_NUMBER + "," + UPDATED_ID_NUMBER, "idNumber.in=" + UPDATED_ID_NUMBER);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByIdNumberIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where idNumber is not null
-        defaultAppUserFiltering("idNumber.specified=true", "idNumber.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByIdNumberContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where idNumber contains
-        defaultAppUserFiltering("idNumber.contains=" + DEFAULT_ID_NUMBER, "idNumber.contains=" + UPDATED_ID_NUMBER);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByIdNumberNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where idNumber does not contain
-        defaultAppUserFiltering("idNumber.doesNotContain=" + UPDATED_ID_NUMBER, "idNumber.doesNotContain=" + DEFAULT_ID_NUMBER);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByNationalityIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where nationality equals to
-        defaultAppUserFiltering("nationality.equals=" + DEFAULT_NATIONALITY, "nationality.equals=" + UPDATED_NATIONALITY);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByNationalityIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where nationality in
-        defaultAppUserFiltering(
-            "nationality.in=" + DEFAULT_NATIONALITY + "," + UPDATED_NATIONALITY,
-            "nationality.in=" + UPDATED_NATIONALITY
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByNationalityIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where nationality is not null
-        defaultAppUserFiltering("nationality.specified=true", "nationality.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByNationalityContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where nationality contains
-        defaultAppUserFiltering("nationality.contains=" + DEFAULT_NATIONALITY, "nationality.contains=" + UPDATED_NATIONALITY);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByNationalityNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where nationality does not contain
-        defaultAppUserFiltering("nationality.doesNotContain=" + UPDATED_NATIONALITY, "nationality.doesNotContain=" + DEFAULT_NATIONALITY);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByProfileImageIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where profileImage equals to
-        defaultAppUserFiltering("profileImage.equals=" + DEFAULT_PROFILE_IMAGE, "profileImage.equals=" + UPDATED_PROFILE_IMAGE);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByProfileImageIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where profileImage in
-        defaultAppUserFiltering(
-            "profileImage.in=" + DEFAULT_PROFILE_IMAGE + "," + UPDATED_PROFILE_IMAGE,
-            "profileImage.in=" + UPDATED_PROFILE_IMAGE
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByProfileImageIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where profileImage is not null
-        defaultAppUserFiltering("profileImage.specified=true", "profileImage.specified=false");
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByProfileImageContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where profileImage contains
-        defaultAppUserFiltering("profileImage.contains=" + DEFAULT_PROFILE_IMAGE, "profileImage.contains=" + UPDATED_PROFILE_IMAGE);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByProfileImageNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where profileImage does not contain
-        defaultAppUserFiltering(
-            "profileImage.doesNotContain=" + UPDATED_PROFILE_IMAGE,
-            "profileImage.doesNotContain=" + DEFAULT_PROFILE_IMAGE
-        );
-    }
-
-    @Test
-    @Transactional
     void getAllAppUsersByIsVerifiedIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedAppUser = appUserRepository.saveAndFlush(appUser);
@@ -898,36 +727,6 @@ class AppUserResourceIT {
 
     @Test
     @Transactional
-    void getAllAppUsersByCreatedAtIsEqualToSomething() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where createdAt equals to
-        defaultAppUserFiltering("createdAt.equals=" + DEFAULT_CREATED_AT, "createdAt.equals=" + UPDATED_CREATED_AT);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByCreatedAtIsInShouldWork() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where createdAt in
-        defaultAppUserFiltering("createdAt.in=" + DEFAULT_CREATED_AT + "," + UPDATED_CREATED_AT, "createdAt.in=" + UPDATED_CREATED_AT);
-    }
-
-    @Test
-    @Transactional
-    void getAllAppUsersByCreatedAtIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        insertedAppUser = appUserRepository.saveAndFlush(appUser);
-
-        // Get all the appUserList where createdAt is not null
-        defaultAppUserFiltering("createdAt.specified=true", "createdAt.specified=false");
-    }
-
-    @Test
-    @Transactional
     void getAllAppUsersByLastLoginAtIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedAppUser = appUserRepository.saveAndFlush(appUser);
@@ -961,24 +760,174 @@ class AppUserResourceIT {
 
     @Test
     @Transactional
-    void getAllAppUsersByPreferencesIsEqualToSomething() throws Exception {
-        UserPreferences preferences;
-        if (TestUtil.findAll(em, UserPreferences.class).isEmpty()) {
-            appUserRepository.saveAndFlush(appUser);
-            preferences = UserPreferencesResourceIT.createEntity(em);
-        } else {
-            preferences = TestUtil.findAll(em, UserPreferences.class).get(0);
-        }
-        em.persist(preferences);
-        em.flush();
-        appUser.setPreferences(preferences);
-        appUserRepository.saveAndFlush(appUser);
-        Long preferencesId = preferences.getId();
-        // Get all the appUserList where preferences equals to preferencesId
-        defaultAppUserShouldBeFound("preferencesId.equals=" + preferencesId);
+    void getAllAppUsersByCreatedAtIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
 
-        // Get all the appUserList where preferences equals to (preferencesId + 1)
-        defaultAppUserShouldNotBeFound("preferencesId.equals=" + (preferencesId + 1));
+        // Get all the appUserList where createdAt equals to
+        defaultAppUserFiltering("createdAt.equals=" + DEFAULT_CREATED_AT, "createdAt.equals=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByCreatedAtIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where createdAt in
+        defaultAppUserFiltering("createdAt.in=" + DEFAULT_CREATED_AT + "," + UPDATED_CREATED_AT, "createdAt.in=" + UPDATED_CREATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByCreatedAtIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where createdAt is not null
+        defaultAppUserFiltering("createdAt.specified=true", "createdAt.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByUpdatedAtIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where updatedAt equals to
+        defaultAppUserFiltering("updatedAt.equals=" + DEFAULT_UPDATED_AT, "updatedAt.equals=" + UPDATED_UPDATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByUpdatedAtIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where updatedAt in
+        defaultAppUserFiltering("updatedAt.in=" + DEFAULT_UPDATED_AT + "," + UPDATED_UPDATED_AT, "updatedAt.in=" + UPDATED_UPDATED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByUpdatedAtIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where updatedAt is not null
+        defaultAppUserFiltering("updatedAt.specified=true", "updatedAt.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByIsDeletedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where isDeleted equals to
+        defaultAppUserFiltering("isDeleted.equals=" + DEFAULT_IS_DELETED, "isDeleted.equals=" + UPDATED_IS_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByIsDeletedIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where isDeleted in
+        defaultAppUserFiltering("isDeleted.in=" + DEFAULT_IS_DELETED + "," + UPDATED_IS_DELETED, "isDeleted.in=" + UPDATED_IS_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByIsDeletedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where isDeleted is not null
+        defaultAppUserFiltering("isDeleted.specified=true", "isDeleted.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByDeletedAtIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where deletedAt equals to
+        defaultAppUserFiltering("deletedAt.equals=" + DEFAULT_DELETED_AT, "deletedAt.equals=" + UPDATED_DELETED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByDeletedAtIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where deletedAt in
+        defaultAppUserFiltering("deletedAt.in=" + DEFAULT_DELETED_AT + "," + UPDATED_DELETED_AT, "deletedAt.in=" + UPDATED_DELETED_AT);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByDeletedAtIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where deletedAt is not null
+        defaultAppUserFiltering("deletedAt.specified=true", "deletedAt.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByDeletedByIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where deletedBy equals to
+        defaultAppUserFiltering("deletedBy.equals=" + DEFAULT_DELETED_BY, "deletedBy.equals=" + UPDATED_DELETED_BY);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByDeletedByIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where deletedBy in
+        defaultAppUserFiltering("deletedBy.in=" + DEFAULT_DELETED_BY + "," + UPDATED_DELETED_BY, "deletedBy.in=" + UPDATED_DELETED_BY);
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByDeletedByIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedAppUser = appUserRepository.saveAndFlush(appUser);
+
+        // Get all the appUserList where deletedBy is not null
+        defaultAppUserFiltering("deletedBy.specified=true", "deletedBy.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllAppUsersByProfileIsEqualToSomething() throws Exception {
+        Profile profile;
+        if (TestUtil.findAll(em, Profile.class).isEmpty()) {
+            appUserRepository.saveAndFlush(appUser);
+            profile = ProfileResourceIT.createEntity(em);
+        } else {
+            profile = TestUtil.findAll(em, Profile.class).get(0);
+        }
+        em.persist(profile);
+        em.flush();
+        appUser.setProfile(profile);
+        appUserRepository.saveAndFlush(appUser);
+        Long profileId = profile.getId();
+        // Get all the appUserList where profile equals to profileId
+        defaultAppUserShouldBeFound("profileId.equals=" + profileId);
+
+        // Get all the appUserList where profile equals to (profileId + 1)
+        defaultAppUserShouldNotBeFound("profileId.equals=" + (profileId + 1));
     }
 
     private void defaultAppUserFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
@@ -995,19 +944,20 @@ class AppUserResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(appUser.getId().intValue())))
-            .andExpect(jsonPath("$.[*].username").value(hasItem(DEFAULT_USERNAME)))
+            .andExpect(jsonPath("$.[*].keycloakId").value(hasItem(DEFAULT_KEYCLOAK_ID.toString())))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].dateOfBirth").value(hasItem(DEFAULT_DATE_OF_BIRTH.toString())))
-            .andExpect(jsonPath("$.[*].idNumber").value(hasItem(DEFAULT_ID_NUMBER)))
-            .andExpect(jsonPath("$.[*].nationality").value(hasItem(DEFAULT_NATIONALITY)))
-            .andExpect(jsonPath("$.[*].profileImage").value(hasItem(DEFAULT_PROFILE_IMAGE)))
             .andExpect(jsonPath("$.[*].isVerified").value(hasItem(DEFAULT_IS_VERIFIED)))
             .andExpect(jsonPath("$.[*].isActive").value(hasItem(DEFAULT_IS_ACTIVE)))
+            .andExpect(jsonPath("$.[*].lastLoginAt").value(hasItem(DEFAULT_LAST_LOGIN_AT.toString())))
             .andExpect(jsonPath("$.[*].createdAt").value(hasItem(DEFAULT_CREATED_AT.toString())))
-            .andExpect(jsonPath("$.[*].lastLoginAt").value(hasItem(DEFAULT_LAST_LOGIN_AT.toString())));
+            .andExpect(jsonPath("$.[*].updatedAt").value(hasItem(DEFAULT_UPDATED_AT.toString())))
+            .andExpect(jsonPath("$.[*].isDeleted").value(hasItem(DEFAULT_IS_DELETED)))
+            .andExpect(jsonPath("$.[*].deletedAt").value(hasItem(DEFAULT_DELETED_AT.toString())))
+            .andExpect(jsonPath("$.[*].deletedBy").value(hasItem(DEFAULT_DELETED_BY.toString())));
 
         // Check, that the count call also returns 1
         restAppUserMockMvc
@@ -1056,19 +1006,20 @@ class AppUserResourceIT {
         // Disconnect from session so that the updates on updatedAppUser are not directly saved in db
         em.detach(updatedAppUser);
         updatedAppUser
-            .username(UPDATED_USERNAME)
+            .keycloakId(UPDATED_KEYCLOAK_ID)
             .email(UPDATED_EMAIL)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .dateOfBirth(UPDATED_DATE_OF_BIRTH)
-            .idNumber(UPDATED_ID_NUMBER)
-            .nationality(UPDATED_NATIONALITY)
-            .profileImage(UPDATED_PROFILE_IMAGE)
             .isVerified(UPDATED_IS_VERIFIED)
             .isActive(UPDATED_IS_ACTIVE)
+            .lastLoginAt(UPDATED_LAST_LOGIN_AT)
             .createdAt(UPDATED_CREATED_AT)
-            .lastLoginAt(UPDATED_LAST_LOGIN_AT);
+            .updatedAt(UPDATED_UPDATED_AT)
+            .isDeleted(UPDATED_IS_DELETED)
+            .deletedAt(UPDATED_DELETED_AT)
+            .deletedBy(UPDATED_DELETED_BY);
         AppUserDTO appUserDTO = appUserMapper.toDto(updatedAppUser);
 
         restAppUserMockMvc
@@ -1162,13 +1113,14 @@ class AppUserResourceIT {
         partialUpdatedAppUser.setId(appUser.getId());
 
         partialUpdatedAppUser
-            .username(UPDATED_USERNAME)
+            .keycloakId(UPDATED_KEYCLOAK_ID)
             .email(UPDATED_EMAIL)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
-            .nationality(UPDATED_NATIONALITY)
-            .isActive(UPDATED_IS_ACTIVE);
+            .isActive(UPDATED_IS_ACTIVE)
+            .updatedAt(UPDATED_UPDATED_AT)
+            .deletedBy(UPDATED_DELETED_BY);
 
         restAppUserMockMvc
             .perform(
@@ -1198,19 +1150,20 @@ class AppUserResourceIT {
         partialUpdatedAppUser.setId(appUser.getId());
 
         partialUpdatedAppUser
-            .username(UPDATED_USERNAME)
+            .keycloakId(UPDATED_KEYCLOAK_ID)
             .email(UPDATED_EMAIL)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .dateOfBirth(UPDATED_DATE_OF_BIRTH)
-            .idNumber(UPDATED_ID_NUMBER)
-            .nationality(UPDATED_NATIONALITY)
-            .profileImage(UPDATED_PROFILE_IMAGE)
             .isVerified(UPDATED_IS_VERIFIED)
             .isActive(UPDATED_IS_ACTIVE)
+            .lastLoginAt(UPDATED_LAST_LOGIN_AT)
             .createdAt(UPDATED_CREATED_AT)
-            .lastLoginAt(UPDATED_LAST_LOGIN_AT);
+            .updatedAt(UPDATED_UPDATED_AT)
+            .isDeleted(UPDATED_IS_DELETED)
+            .deletedAt(UPDATED_DELETED_AT)
+            .deletedBy(UPDATED_DELETED_BY);
 
         restAppUserMockMvc
             .perform(

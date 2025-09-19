@@ -12,39 +12,33 @@ public class AppUserTestSamples {
     public static AppUser getAppUserSample1() {
         return new AppUser()
             .id(1L)
-            .username("username1")
+            .keycloakId(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"))
             .email("email1")
             .phoneNumber("phoneNumber1")
             .firstName("firstName1")
             .lastName("lastName1")
-            .idNumber("idNumber1")
-            .nationality("nationality1")
-            .profileImage("profileImage1");
+            .deletedBy(UUID.fromString("23d8dc04-a48b-45d9-a01d-4b728f0ad4aa"));
     }
 
     public static AppUser getAppUserSample2() {
         return new AppUser()
             .id(2L)
-            .username("username2")
+            .keycloakId(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"))
             .email("email2")
             .phoneNumber("phoneNumber2")
             .firstName("firstName2")
             .lastName("lastName2")
-            .idNumber("idNumber2")
-            .nationality("nationality2")
-            .profileImage("profileImage2");
+            .deletedBy(UUID.fromString("ad79f240-3727-46c3-b89f-2cf6ebd74367"));
     }
 
     public static AppUser getAppUserRandomSampleGenerator() {
         return new AppUser()
             .id(longCount.incrementAndGet())
-            .username(UUID.randomUUID().toString())
+            .keycloakId(UUID.randomUUID())
             .email(UUID.randomUUID().toString())
             .phoneNumber(UUID.randomUUID().toString())
             .firstName(UUID.randomUUID().toString())
             .lastName(UUID.randomUUID().toString())
-            .idNumber(UUID.randomUUID().toString())
-            .nationality(UUID.randomUUID().toString())
-            .profileImage(UUID.randomUUID().toString());
+            .deletedBy(UUID.randomUUID());
     }
 }
