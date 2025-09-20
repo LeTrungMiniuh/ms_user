@@ -1,4 +1,4 @@
 org.springframework.test.context.ContextCustomizerFactory = \
-    com.ticketsystem.user.config.\
-    SqlTestContainersSpringContextCustomizerFactory,com.ticketsystem.user.\
+    com.ridehub.user.config.\
+    SqlTestContainersSpringContextCustomizerFactory,com.ridehub.user.\
     config.RedisTestContainersSpringContextCustomizerFactory

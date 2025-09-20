@@ -1,4 +1,4 @@
-package com.ticketsystem.user.config;
+package com.ridehub.user.config;
 
 import static org.mockito.Mockito.mock;
 

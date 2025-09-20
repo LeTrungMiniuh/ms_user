@@ -1,10 +1,10 @@
-package com.ticketsystem.user.domain;
+package com.ridehub.user.domain;
 
-import static com.ticketsystem.user.domain.AppUserTestSamples.*;
-import static com.ticketsystem.user.domain.ProfileTestSamples.*;
+import static com.ridehub.user.domain.AppUserTestSamples.*;
+import static com.ridehub.user.domain.ProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.ticketsystem.user.web.rest.TestUtil;
+import com.ridehub.user.web.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 
 class AppUserTest {

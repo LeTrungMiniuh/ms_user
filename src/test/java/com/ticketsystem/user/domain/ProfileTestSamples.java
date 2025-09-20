@@ -1,4 +1,4 @@
-package com.ticketsystem.user.domain;
+package com.ridehub.user.domain;
 
 import java.util.Random;
 import java.util.UUID;

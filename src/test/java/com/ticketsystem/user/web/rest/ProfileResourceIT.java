@@ -1,7 +1,7 @@
-package com.ticketsystem.user.web.rest;
+package com.ridehub.user.web.rest;
 
-import static com.ticketsystem.user.domain.ProfileAsserts.*;
-import static com.ticketsystem.user.web.rest.TestUtil.createUpdateProxyForBean;
+import static com.ridehub.user.domain.ProfileAsserts.*;
+import static com.ridehub.user.web.rest.TestUtil.createUpdateProxyForBean;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -9,11 +9,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ticketsystem.user.IntegrationTest;
-import com.ticketsystem.user.domain.Profile;
-import com.ticketsystem.user.repository.ProfileRepository;
-import com.ticketsystem.user.service.dto.ProfileDTO;
-import com.ticketsystem.user.service.mapper.ProfileMapper;
+import com.ridehub.user.IntegrationTest;
+import com.ridehub.user.domain.Profile;
+import com.ridehub.user.repository.ProfileRepository;
+import com.ridehub.user.service.dto.ProfileDTO;
+import com.ridehub.user.service.mapper.ProfileMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
 import java.time.LocalDate;

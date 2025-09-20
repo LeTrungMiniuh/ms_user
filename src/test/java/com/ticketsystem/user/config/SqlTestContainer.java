@@ -1,4 +1,4 @@
-package com.ticketsystem.user.config;
+package com.ridehub.user.config;
 
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;

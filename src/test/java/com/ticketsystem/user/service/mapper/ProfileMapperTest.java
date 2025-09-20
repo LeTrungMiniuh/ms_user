@@ -1,7 +1,7 @@
-package com.ticketsystem.user.service.mapper;
+package com.ridehub.user.service.mapper;
 
-import static com.ticketsystem.user.domain.ProfileAsserts.*;
-import static com.ticketsystem.user.domain.ProfileTestSamples.*;
+import static com.ridehub.user.domain.ProfileAsserts.*;
+import static com.ridehub.user.domain.ProfileTestSamples.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.ticketsystem.user.config;
+package com.ridehub.user.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

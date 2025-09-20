@@ -1,4 +1,4 @@
-package com.ticketsystem.user.security;
+package com.ridehub.user.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames.ID_TOKEN;

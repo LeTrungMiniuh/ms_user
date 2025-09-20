@@ -17,7 +17,7 @@
     "lastLiquibaseTimestamp": 1757854959000,
     "monorepository": true,
     "nativeLanguage": "en",
-    "packageName": "com.ticketsystem.user",
+    "packageName": "com.ridehub.user",
     "prodDatabaseType": "mysql",
     "serverPort": "8081",
     "serviceDiscoveryType": "consul",

@@ -1,4 +1,4 @@
-package com.ticketsystem.user.config;
+package com.ridehub.user.config;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

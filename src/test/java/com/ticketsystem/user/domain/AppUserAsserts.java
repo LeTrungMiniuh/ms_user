@@ -1,4 +1,4 @@
-package com.ticketsystem.user.domain;
+package com.ridehub.user.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

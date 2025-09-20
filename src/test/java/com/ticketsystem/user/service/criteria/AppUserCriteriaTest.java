@@ -1,4 +1,4 @@
-package com.ticketsystem.user.service.criteria;
+package com.ridehub.user.service.criteria;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

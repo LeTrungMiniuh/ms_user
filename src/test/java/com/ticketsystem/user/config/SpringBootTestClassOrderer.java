@@ -1,6 +1,6 @@
-package com.ticketsystem.user.config;
+package com.ridehub.user.config;
 
-import com.ticketsystem.user.IntegrationTest;
+import com.ridehub.user.IntegrationTest;
 import java.util.Comparator;
 import org.junit.jupiter.api.ClassDescriptor;
 import org.junit.jupiter.api.ClassOrderer;
