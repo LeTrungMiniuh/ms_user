@@ -3,8 +3,7 @@ package com.ticketsystem.user.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ticketsystem.msbooking.client.api.BookingResourceMsbookingApi;
-import com.ticketsystem.msnotification.client.api.NotificationResourceMsnotificationApi;
-import com.ticketsystem.mspayment.client.api.PaymentResourceMspaymentApi;
+
 import com.ticketsystem.mspromotion.client.api.PromotionResourceMspromotionApi;
 import com.ticketsystem.msroute.client.api.RouteResourceMsrouteApi;
 import com.ticketsystem.msuser.client.api.AppUserResourceMsuserApi;

@@ -112,7 +112,7 @@
         <dependency>
             <groupId>com.ticketsystem.clients</groupId>
             <artifactId>client-open-feign-avro</artifactId>
-            <version>1.3.0</version>
+            <version>1.3.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.confluent/kafka-avro-serializer -->
         <dependency>
