@@ -19,12 +19,12 @@ server:
   forward-headers-strategy: native
   sql-port: ${SQL_PORT:3308}
   sql-name: ${SQL_NAME:user}
+  dev-config-folder: /D:/VsCode-WordSpace/ticket-store/backend/ticket-store-central-config
 
 spring:
   config:
     # Import shared config first
-    import: optional:file:/home/phungvip/Desktop/work-space/ticket-store/backend/ticket-store-central-config/application-dev.yml
-    # Then service-specific config (will override shared)
+    import: optional:file:${server.dev-config-folder}/application-dev.yml
   # ===================================================================
   # DEV profile - fixed and tidied
   # ===================================================================
